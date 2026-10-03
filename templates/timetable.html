@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="timetable-page"><div class="page-topbar">
+
+    <div>
+        <h2>Timetable</h2>
+        <p class="page-subtitle">
+            Weekly class schedule
+        </p>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="back-button">
+    ← Back
+	</a>
+
+</div>
+
+
+{% if session['role'] == 'admin' %}
+
+<form
+    method="GET"
+    action="{{ url_for('timetable') }}"
+    class="class-selector"
+>
+
+    <label for="class_id">
+        Class
+    </label>
+
+    <select
+        id="class_id"
+        name="class_id"
+        onchange="this.form.submit()"
+    >
+
+        <option value="">
+            Select Class
+        </option>
+
+        {% for c in classes %}
+
+        <option
+            value="{{ c.id }}"
+            {% if selected_class_id == c.id %}
+                selected
+            {% endif %}
+        >
+            {{ c.class_name }} - {{ c.division }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+</form>
+
+{% endif %}
+
+
+{% if timetable %}
+
+{% set days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday'
+] %}
+
+{% set times = [
+    '09:15:00',
+    '10:15:00',
+    '11:15:00',
+    '12:15:00',
+    '13:45:00',
+    '14:45:00',
+    '15:45:00',
+    '16:45:00'
+] %}
+
+
+<div class="table-wrapper">
+
+    <table class="timetable-grid">
+
+        <thead>
+
+            <tr>
+
+                <th class="day-header">
+                    Day
+                </th>
+
+                {% for time in times %}
+
+                <th>
+
+                    {% if time == '09:15:00' %}
+                        9:15–10:15
+                    {% elif time == '10:15:00' %}
+                        10:15–11:15
+                    {% elif time == '11:15:00' %}
+                        11:15–12:15
+                    {% elif time == '12:15:00' %}
+                        12:15–1:00
+                    {% elif time == '13:45:00' %}
+                        1:45–2:45
+                    {% elif time == '14:45:00' %}
+                        2:45–3:45
+                    {% elif time == '15:45:00' %}
+                        3:45–4:45
+                    {% elif time == '16:45:00' %}
+                        4:45–5:45
+                    {% endif %}
+
+                </th>
+
+                {% endfor %}
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for day in days %}
+
+            <tr>
+
+                <th class="day-cell">
+                    {{ day }}
+                </th>
+
+
+                {% for time in times %}
+
+                <td class="schedule-cell">
+
+                    {% for t in timetable %}
+
+                        {% if
+                            t.time_slot_ref.day == day
+                            and
+                            t.time_slot_ref.start_time|string == time
+                        %}
+
+                        <div class="class-card">
+
+                            <div class="subject-code">
+                                {{ t.subject_ref.subject_code }}
+                            </div>
+
+                            <div class="subject-name">
+                                {{ t.subject_ref.subject_name }}
+                            </div>
+
+                            <div class="class-info">
+                                {{ t.faculty_ref.faculty_name
+                                   if t.faculty_ref
+                                   else '-' }}
+                            </div>
+
+                            <div class="class-info room-text">
+                                {{ t.room_ref.room_name
+                                   if t.room_ref
+                                   else '-' }}
+                            </div>
+
+                            {% if t.batch_ref %}
+
+                            <div class="batch">
+                                {{ t.batch_ref.batch_name }}
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </td>
+
+                {% endfor %}
+
+            </tr>
+
+            {% endfor %}
+
+
+            <tr class="lunch-row">
+
+                <th class="day-cell">
+                    Lunch
+                </th>
+
+                <td colspan="8">
+                    1:00 PM – 1:45 PM
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% else %}
+
+    <div class="empty-timetable">
+        No timetable generated yet.
+    </div>
+
+{% endif %}
+
+</div>{% endblock %}

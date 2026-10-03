@@ -1,0 +1,28 @@
+TT GENERATOR — START HERE
+
+If you are setting this project up from ZERO:
+
+1. Open pgAdmin.
+2. Run sql/00_create_database.sql while connected to the default postgres database.
+3. Connect to the new tt_generator database.
+4. Run sql/01_schema.sql.
+5. Run sql/02_seed_demo.sql.
+6. Run sql/03_verify_demo.sql.
+7. Open a terminal in this project folder.
+8. Create/activate a Python virtual environment.
+9. Run: pip install -r requirements.txt
+10. Set your PostgreSQL password in DATABASE_URL or edit app.py.
+11. Run: python app.py
+12. Open: http://127.0.0.1:5000
+13. Login: admin / admin123
+14. Go to Generate Timetable.
+15. View the generated timetable.
+
+If you ALREADY have the older TT Generator database:
+
+- Do NOT run the fresh database/schema scripts blindly.
+- Run sql/scheduling_migration.sql on the existing tt_generator database.
+- Then use the Flask project.
+
+Full instructions: SETUP_GUIDE.md
+Full documentation: README.md

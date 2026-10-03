@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+        <h1>Add User</h1>
+        <p>Create a faculty or student login account</p>
+    </div>
+
+    <div class="form-container">
+
+        <form method="POST">
+
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <label>Role</label>
+            <select name="role" required>
+                <option value="">Select Role</option>
+                <option value="teacher">Faculty</option>
+                <option value="student">Student</option>
+            </select>
+			<label>Faculty</label>
+			<select name="faculty_id">
+				<option value="">Select Faculty</option>
+
+				{% for f in faculty %}
+					<option value="{{ f.id }}">{{ f.faculty_name }}</option>
+				{% endfor %}
+			</select>
+			<label>Class</label>
+			<select name="class_id">
+				<option value="">Select Class</option>
+
+				{% for c in classes %}
+					<option value="{{ c.id }}">{{ c.class_name }}</option>
+				{% endfor %}
+			</select>
+            <br><br>
+
+            <button type="submit" class="dashboard-button">
+                Create User
+            </button>
+
+        </form>
+
+    </div>
+
+    <br>
+
+    <a href="{{ url_for('users') }}" class="back-button">
+        ← Back
+    </a>
+
+</div>
+
+{% endblock %}

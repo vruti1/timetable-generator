@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="dashboard-page"><div class="dashboard-header">
+    <h1>Admin Dashboard</h1>
+    <p>Manage your timetable system</p>
+</div>
+
+<div class="dashboard-grid">
+
+    <a class="dashboard-button" href="{{ url_for('classes') }}">
+        Classes
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('subjects') }}">
+        Subjects
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('faculty') }}">
+        Faculty
+    </a>
+	<a class="dashboard-button" href="{{ url_for('users') }}">
+		Users
+	</a>
+    <a class="dashboard-button" href="{{ url_for('rooms') }}">
+        Rooms / Labs
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('time_slots') }}">
+        Time Slots
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('assignments') }}">
+        Teaching Assignments
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('availability') }}">
+        Faculty Availability
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('generate_timetable') }}">
+        Generate Timetable
+    </a>
+
+    <a class="dashboard-button" href="{{ url_for('timetable') }}">
+        View Timetable
+    </a>
+
+</div>
+
+</div>{% endblock %}

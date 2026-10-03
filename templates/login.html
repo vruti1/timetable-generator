@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="login-page"><div class="login-card">
+
+    <h1>Login</h1>
+
+    <form method="post">
+
+        <label>Username</label>
+        <input
+            name="username"
+            type="text"
+            required
+        >
+
+        <label>Password</label>
+        <input
+            name="password"
+            type="password"
+            required
+        >
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <p class="login-demo">
+        Demo: admin/admin123, teacher/teacher123, student/student123
+    </p>
+
+</div>
+
+</div>{% endblock %}

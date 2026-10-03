@@ -1,0 +1,60 @@
+TT Generator — Complete Project
+
+ROOT
+├── app.py                         Flask application, models, routes, login, CRUD
+├── requirements.txt              Python dependencies
+├── .env.example                  Example environment variables
+├── README.md                     Full project documentation
+├── SETUP_GUIDE.md                Fresh-PC teammate instructions
+├── PROJECT_STRUCTURE.txt         This file
+│
+├── scheduler/
+│   ├── __init__.py
+│   └── engine.py                 Constraint scheduler + backtracking
+│
+├── sql/
+│   ├── 00_create_database.sql   Creates tt_generator database
+│   ├── 01_schema.sql            Creates every application table
+│   ├── 02_seed_demo.sql         Inserts complete demo data
+│   ├── 03_verify_demo.sql       Checks that setup worked
+│   ├── 04_reset_generated_timetable.sql
+│   └── scheduling_migration.sql Backward-compatible migration for old DB
+│
+├── templates/
+│   ├── base.html
+│   ├── login.html
+│   ├── admin_dashboard.html
+│   ├── classes.html
+│   ├── edit_class.html
+│   ├── subjects.html
+│   ├── edit_subject.html
+│   ├── faculty.html
+│   ├── edit_faculty.html
+│   ├── rooms.html
+│   ├── edit_room.html
+│   ├── time_slots.html
+│   ├── edit_time_slot.html
+│   ├── assignments.html
+│   ├── availability.html
+│   ├── generate_timetable.html
+│   └── timetable.html
+│
+└── static/
+    └── style.css
+
+DATABASE TABLES
+users
+classes
+subjects
+faculty
+rooms
+time_slots
+lab_batches
+timetable
+faculty_availability
+teaching_assignments
+
+SCHEDULING FLOW
+Teaching assignments → expand periods/week into jobs → find valid slot/room →
+check class/faculty/room/availability constraints → place job → backtrack if needed →
+save placements into timetable.

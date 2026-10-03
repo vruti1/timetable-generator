@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="availability-page"><div class="page-topbar">
+    <div>
+        <h2>Faculty Availability</h2>
+        <p class="page-subtitle">
+            Set when faculty members are available for scheduling.
+        </p>
+    </div>
+
+    <button
+        type="button"
+        class="back-button"
+        onclick="window.location.href='{{ url_for('admin_dashboard') }}'"
+    >
+        ← Back
+    </button>
+</div>
+
+<form
+    method="post"
+    action="{{ url_for('save_availability') }}"
+>
+
+    <div class="availability-actions">
+
+        <button
+            type="button"
+            onclick="setAllAvailability(true)"
+        >
+            Select All
+        </button>
+
+        <button
+            type="button"
+            class="secondary-button"
+            onclick="setAllAvailability(false)"
+        >
+            Deselect All
+        </button>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="availability-table">
+
+            <tr>
+
+                <th>Faculty</th>
+
+                {% for t in time_slots %}
+
+                <th>
+                    {{ t.day }}<br>
+                    {{ t.start_time }}-{{ t.end_time }}
+                </th>
+
+                {% endfor %}
+
+            </tr>
+
+            {% for f in faculty %}
+
+            <tr>
+
+                <td>
+                    <strong>{{ f.faculty_name }}</strong>
+                </td>
+
+                {% for t in time_slots %}
+
+                <td>
+
+                    <input
+                        type="checkbox"
+                        class="availability-checkbox"
+                        name="availability_{{ f.id }}_{{ t.id }}"
+                        {% if saved.get((f.id,t.id),False) %}
+                            checked
+                        {% endif %}
+                    >
+
+                </td>
+
+                {% endfor %}
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <button
+        type="submit"
+        class="save-availability"
+    >
+        Save Availability
+    </button>
+
+</form>
+
+</div><script>
+
+function setAllAvailability(value) {
+
+    const checkboxes = document.querySelectorAll(
+        '.availability-checkbox'
+    );
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.checked = value;
+    });
+
+}
+
+</script>{% endblock %}
