@@ -1,10 +1,8 @@
-# TT Generator — Complete From-Zero Package
+# TT Generator 
 
 Automated College Timetable Generator using **Python + Flask + SQLAlchemy + PostgreSQL + HTML/CSS**.
 
-This package is designed so a teammate can set the project up from a fresh PostgreSQL database instead of starting from an already-prepared database.
-
-## 1. Roles (kept exactly as requested)
+## 1. ROLES
 
 ### ADMIN
 - Manage Classes
@@ -21,7 +19,6 @@ This package is designed so a teammate can set the project up from a fresh Postg
 ### STUDENT
 - View Timetable
 
-No extra Faculty or Student management functions are required.
 
 ## 2. Project flow
 
