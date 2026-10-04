@@ -142,6 +142,25 @@ def add_user():
         classes=Class.query.order_by(Class.id).all()
 
     )
+@app.route('/change-password/<int:id>', methods=['GET', 'POST'])
+@required('admin')
+def change_password(id):
+    user = db.get_or_404(User, id)
+
+    if request.method == 'POST':
+        new_password = request.form.get('password', '')
+
+        if not new_password:
+            flash('Password cannot be empty.', 'error')
+            return render_template('change_password.html', user=user)
+
+        user.password = generate_password_hash(new_password)
+        db.session.commit()
+
+        flash('Password changed successfully.', 'success')
+        return redirect(url_for('users'))
+
+    return render_template('change_password.html', user=user)
     
 @app.get('/delete-user/<int:id>')
 @required('admin')
