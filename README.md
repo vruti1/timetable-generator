@@ -245,8 +245,3 @@ TT_Generator_Final/
 │
 ├── templates/
 └── static/
-```
-
-## 14. Viva explanation
-
-PostgreSQL stores the input data and the generated timetable. Flask handles the web application and database operations. The scheduling engine reads the data, checks hard constraints, uses backtracking when necessary, and returns a conflict-free timetable when the supplied data permits one.
