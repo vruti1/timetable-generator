@@ -429,7 +429,7 @@ def timetable():
                 (Timetable.batch_id.is_(None))
             )
 
-    # Admin can select SE / TE
+    # Admin can select SE / TE / BE
     else:
 
         selected_class_id = request.args.get(
@@ -444,7 +444,8 @@ def timetable():
 
     timetable_data = query.order_by(
         Timetable.class_id,
-        Timetable.time_slot_id
+        Timetable.time_slot_id,
+        Timetable.batch_id
     ).all()
 
     classes = Class.query.order_by(

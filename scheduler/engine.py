@@ -87,7 +87,7 @@ def generate_schedule(
     batch_busy = set()
 
     result = []
-
+    faculty_daily_hours = {}
     subject_day_busy = set()
 
     # ---------------------------------------------------------
@@ -99,7 +99,14 @@ def generate_schedule(
             (faculty_id, slot_id),
             True
         )
-
+        
+    def faculty_has_daily_capacity(faculty_id, day, hours):
+        current_hours = faculty_daily_hours.get(
+            (faculty_id, day),
+            0
+        )
+        return current_hours + hours <= 5
+    
     def room_candidates(room_type, strength, slot_id):
         source = (
             lab_rooms
@@ -374,7 +381,13 @@ def generate_schedule(
 
                 subject_id = assignment.subject_id
                 faculty_id = assignment.faculty_id
-
+                if not faculty_has_daily_capacity(
+                    faculty_id,
+                    first.day,
+                    2
+                ):
+                    valid = False
+                    break
                 for slot in slots_pair:
 
                     if (
@@ -446,7 +459,18 @@ def generate_schedule(
             for batch, assignment, room in proposed:
 
                 for slot in slots_pair:
-
+                    faculty_daily_hours[
+                        (
+                            assignment.faculty_id,
+                            slot.day
+                        )
+                    ] = faculty_daily_hours.get(
+                        (
+                            assignment.faculty_id,
+                            slot.day
+                        ),
+                        0
+                    ) + 1
                     class_busy.add(
                         (
                             class_id,
@@ -519,7 +543,17 @@ def generate_schedule(
                 slot_id,
                 day
             ) in added:
+                faculty_daily_hours[
+                    (faculty_id, day)
+                ] -= 1
 
+                if faculty_daily_hours[
+                    (faculty_id, day)
+                ] == 0:
+                    del faculty_daily_hours[
+                        (faculty_id, day)
+                    ]
+                    
                 class_busy.remove(
                     (
                         cid,
@@ -589,7 +623,12 @@ def generate_schedule(
                 slot.id
             ) in class_busy:
                 continue
-
+            if not faculty_has_daily_capacity(
+                job["faculty_id"],
+                slot.day,
+                1
+            ):
+                continue
             if (
                 job["faculty_id"],
                 slot.id
@@ -668,7 +707,18 @@ def generate_schedule(
                 job["subject_id"],
                 slot.day
             )
-
+            faculty_daily_hours[
+                (
+                    job["faculty_id"],
+                    slot.day
+                )
+            ] = faculty_daily_hours.get(
+                (
+                    job["faculty_id"],
+                    slot.day
+                ),
+                0
+            ) + 1
             class_busy.add(class_key)
             faculty_busy.add(faculty_key)
             room_busy.add(room_key)
@@ -688,7 +738,27 @@ def generate_schedule(
 
             if schedule_theory(index + 1):
                 return True
+            
+            faculty_daily_hours[
+                (
+                    job["faculty_id"],
+                    slot.day
+                )
+            ] -= 1
 
+            if faculty_daily_hours[
+                (
+                    job["faculty_id"],
+                    slot.day
+                )
+            ] == 0:
+                del faculty_daily_hours[
+                    (
+                        job["faculty_id"],
+                        slot.day
+                    )
+                ]
+                
             result.pop()
 
             class_busy.remove(class_key)
