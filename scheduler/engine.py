@@ -545,13 +545,13 @@ def generate_schedule(
                 day
 
             ) in reversed(added):
-                        key = (faculty_id, day)
-                        remaining = faculty_daily_hours.get(key, 0) - 1
+                key = (faculty_id, day)
+                remaining = faculty_daily_hours.get(key, 0) - 1
 
-                        if remaining > 0:
-                            faculty_daily_hours[key] = remaining
-                        else:
-                            faculty_daily_hours.pop(key, None)
+                if remaining > 0:
+                    faculty_daily_hours[key] = remaining
+                else:
+                    faculty_daily_hours.pop(key, None)
 
                 class_busy.remove(
                     (
