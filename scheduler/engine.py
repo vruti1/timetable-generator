@@ -561,8 +561,11 @@ def generate_schedule(
                 )
 
 
-                if faculty_daily_hours[(faculty_id, day)] == 0:
-                    del faculty_daily_hours[(faculty_id, day)]
+                key = (faculty_id, day)
+                if faculty_daily_hours.get(key, 0) <= 1:
+                    faculty_daily_hours.pop(key, None)
+                else:
+                    faculty_daily_hours[key] -= 1
 
                 class_busy.discard((cid, slot_id))
                 faculty_busy.discard((faculty_id, slot_id))
