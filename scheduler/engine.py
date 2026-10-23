@@ -543,9 +543,20 @@ def generate_schedule(
                 subject_id,
                 slot_id,
                 day
-            ) in reversed(added):
 
+            ) in reversed(added):
                 faculty_daily_hours[(faculty_id, day)] -= 1
+
+                if faculty_daily_hours[(faculty_id, day)] == 0:
+                    del faculty_daily_hours[(faculty_id, day)]
+
+                class_busy.remove(
+                    (
+                        cid,
+                        slot_id
+                    )
+                )
+
 
                 if faculty_daily_hours[(faculty_id, day)] == 0:
                     del faculty_daily_hours[(faculty_id, day)]

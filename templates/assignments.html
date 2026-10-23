@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Load Distribution{% endblock %}
@@ -17,7 +18,6 @@
     </div>
 
     <div class="crud-grid">
-        <!-- Add Assignment Form -->
         <div class="crud-form-card">
             <h3 class="card-heading">Add Teaching Assignment</h3>
             <form method="post" action="{{ url_for('add_assignment') }}" class="standard-form">
@@ -62,7 +62,6 @@
             </form>
         </div>
 
-        <!-- Assignments Table -->
         <div class="crud-table-card">
             <div class="table-header-row">
                 <h3 class="card-heading">Active Assignments</h3>
@@ -103,3 +102,4 @@
     </div>
 </div>
 {% endblock %}
+
