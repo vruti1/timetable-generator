@@ -534,7 +534,7 @@ def generate_schedule(
             if schedule_lab_blocks(index + 1):
                 return True
 
-            
+
             for (
                 cid,
                 faculty_id,
@@ -543,7 +543,6 @@ def generate_schedule(
                 subject_id,
                 slot_id,
                 day
-
             ) in reversed(added):
                 key = (faculty_id, day)
                 remaining = faculty_daily_hours.get(key, 0) - 1
@@ -553,20 +552,6 @@ def generate_schedule(
                 else:
                     faculty_daily_hours.pop(key, None)
 
-                class_busy.remove(
-                    (
-                        cid,
-                        slot_id
-                    )
-                )
-
-
-                key = (faculty_id, day)
-                if faculty_daily_hours.get(key, 0) <= 1:
-                    faculty_daily_hours.pop(key, None)
-                else:
-                    faculty_daily_hours[key] -= 1
-
                 class_busy.discard((cid, slot_id))
                 faculty_busy.discard((faculty_id, slot_id))
                 room_busy.discard((room_id, slot_id))
@@ -574,6 +559,7 @@ def generate_schedule(
                 subject_day_busy.discard((cid, subject_id, day))
 
                 result.pop()
+
 
         return False
 
