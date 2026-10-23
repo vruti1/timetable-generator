@@ -1,1 +1,88 @@
-{% extends 'base.html' %}{% block content %}<h1>Manage Classes</h1><form method="post" action="{{url_for('add_class')}}" class="card"><label>Class Name</label><input name="class_name" required><label>Division</label><input name="division" required><label>Strength</label><input type="number" name="strength" min="1" required><button>Add Class</button></form><table><tr><th>ID</th><th>Class</th><th>Division</th><th>Strength</th><th>Action</th></tr>{% for c in classes %}<tr><td>{{c.id}}</td><td>{{c.class_name}}</td><td>{{c.division}}</td><td>{{c.strength}}</td><td><a href="{{url_for('edit_class',id=c.id)}}">Edit</a> | <a href="{{url_for('delete_class',id=c.id)}}" onclick="return confirm('Delete?')">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Manage Classes{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Manage Classes</h1>
+            <p class="page-subtitle">Add and configure class divisions and student counts</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="crud-grid">
+        <!-- Add Class Form -->
+        <div class="crud-form-card">
+            <h3 class="card-heading">Add New Class</h3>
+            <form method="post" action="{{ url_for('add_class') }}" class="standard-form">
+                <div class="form-group">
+                    <label for="class_name">Class Name</label>
+                    <input id="class_name" name="class_name" class="form-control" placeholder="e.g. SE IoT" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="division">Division</label>
+                        <input id="division" name="division" class="form-control" placeholder="e.g. A" required>
+                    </div>
+
+                    <div class="form-group col">
+                        <label for="strength">Student Strength</label>
+                        <input type="number" id="strength" name="strength" class="form-control" placeholder="e.g. 60" min="1" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Class
+                </button>
+            </form>
+        </div>
+
+        <!-- Classes Table -->
+        <div class="crud-table-card">
+            <div class="table-header-row">
+                <h3 class="card-heading">Classes List</h3>
+                <span class="badge-count">{{ classes|length }} classes</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>Class Name</th>
+                            <th>Division</th>
+                            <th>Strength</th>
+                            <th style="text-align: right; width: 140px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in classes %}
+                        <tr>
+                            <td>{{ c.id }}</td>
+                            <td><strong>{{ c.class_name }}</strong></td>
+                            <td><span class="tag">Div {{ c.division }}</span></td>
+                            <td>{{ c.strength }} students</td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('edit_class', id=c.id) }}" class="btn-action edit">Edit</a>
+                                <a href="{{ url_for('delete_class', id=c.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No classes added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

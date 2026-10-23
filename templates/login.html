@@ -1,33 +1,68 @@
 {% extends 'base.html' %}
 
+{% block title %}Login - Timetable Management System{% endblock %}
+
 {% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <i class="fa-solid fa-calendar-days login-icon"></i>
+            <h2>Timetable System</h2>
+            <p>Please enter your credentials to log in</p>
+        </div>
 
-<div class="login-page"><div class="login-card">
+        <form method="post" class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    class="form-control"
+                    placeholder="Username"
+                    required
+                    autofocus
+                >
+            </div>
 
-    <h1>Login</h1>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        class="form-control"
+                        placeholder="Password"
+                        required
+                    >
+                    <button type="button" class="btn-toggle-pwd" id="togglePassword" aria-label="Toggle password">
+                        <i class="fa-regular fa-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
 
-    <form method="post">
+            <button type="submit" class="btn btn-primary btn-block">
+                Login
+            </button>
+        </form>
 
-        <label>Username</label>
-        <input
-            name="username"
-            type="text"
-            required
-        >
-
-        <label>Password</label>
-        <input
-            name="password"
-            type="password"
-            required
-        >
-
-        <button type="submit">
-            Login
-        </button>
-
-    </form>
-
+        <div class="login-footer">
+            <small class="text-muted">
+        </div>
+    </div>
 </div>
 
-</div>{% endblock %}
+<script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const pwdInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (toggleBtn && pwdInput) {
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = pwdInput.type === 'password';
+            pwdInput.type = isPassword ? 'text' : 'password';
+            toggleIcon.className = isPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+        });
+    }
+</script>
+{% endblock %}

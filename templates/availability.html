@@ -1,121 +1,96 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block title %}Faculty Availability{% endblock %}
 
-<div class="availability-page"><div class="page-topbar">
-    <div>
-        <h2>Faculty Availability</h2>
-        <p class="page-subtitle">
-            Set when faculty members are available for scheduling.
-        </p>
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Faculty Availability</h1>
+            <p class="page-subtitle">Specify availability for each instructor to avoid scheduling conflicts</p>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="btn btn-outline" onclick="setAllAvailability(true)">
+                <i class="fa-solid fa-check"></i> Select All
+            </button>
+            <button type="button" class="btn btn-outline" onclick="setAllAvailability(false)">
+                <i class="fa-solid fa-xmark"></i> Deselect All
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
     </div>
 
-    <button
-        type="button"
-        class="back-button"
-        onclick="window.location.href='{{ url_for('admin_dashboard') }}'"
-    >
-        ← Back
-    </button>
+    <form method="post" action="{{ url_for('save_availability') }}">
+        <div class="card content-card" style="padding: 0; overflow: hidden;">
+            <div class="matrix-toolbar">
+                <span class="text-muted"><i class="fa-solid fa-circle-info"></i> Checked boxes indicate the faculty member is available.</span>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Availability
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th class="matrix-faculty-header">Faculty</th>
+                            {% for t in time_slots %}
+                            <th class="matrix-slot-header">
+                                <span class="slot-day">{{ t.day[:3] }}</span>
+                                <span class="slot-time">
+                                    {{ t.start_time.strftime('%I:%M') if t.start_time.strftime else t.start_time }}-{{ t.end_time.strftime('%I:%M') if t.end_time.strftime else t.end_time }}
+                                </span>
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in faculty %}
+                        <tr>
+                            <td class="matrix-faculty-cell">
+                                <strong>{{ f.faculty_name }}</strong>
+                                <small class="text-muted">({{ f.faculty_code }})</small>
+                            </td>
+                            {% for t in time_slots %}
+                            <td class="matrix-checkbox-cell">
+                                <input
+                                    type="checkbox"
+                                    class="availability-checkbox"
+                                    name="availability_{{ f.id }}_{{ t.id }}"
+                                    {% if saved.get((f.id, t.id), False) %}checked{% endif %}
+                                >
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="{{ (time_slots|length) + 1 }}" class="text-center text-muted" style="padding: 30px;">
+                                No faculty members or time slots found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="matrix-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Availability
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 
-<form
-    method="post"
-    action="{{ url_for('save_availability') }}"
->
-
-    <div class="availability-actions">
-
-        <button
-            type="button"
-            onclick="setAllAvailability(true)"
-        >
-            Select All
-        </button>
-
-        <button
-            type="button"
-            class="secondary-button"
-            onclick="setAllAvailability(false)"
-        >
-            Deselect All
-        </button>
-
-    </div>
-
-    <div class="table-wrapper">
-
-        <table class="availability-table">
-
-            <tr>
-
-                <th>Faculty</th>
-
-                {% for t in time_slots %}
-
-                <th>
-                    {{ t.day }}<br>
-                    {{ t.start_time }}-{{ t.end_time }}
-                </th>
-
-                {% endfor %}
-
-            </tr>
-
-            {% for f in faculty %}
-
-            <tr>
-
-                <td>
-                    <strong>{{ f.faculty_name }}</strong>
-                </td>
-
-                {% for t in time_slots %}
-
-                <td>
-
-                    <input
-                        type="checkbox"
-                        class="availability-checkbox"
-                        name="availability_{{ f.id }}_{{ t.id }}"
-                        {% if saved.get((f.id,t.id),False) %}
-                            checked
-                        {% endif %}
-                    >
-
-                </td>
-
-                {% endfor %}
-
-            </tr>
-
-            {% endfor %}
-
-        </table>
-
-    </div>
-
-    <button
-        type="submit"
-        class="save-availability"
-    >
-        Save Availability
-    </button>
-
-</form>
-
-</div><script>
-
+<script>
 function setAllAvailability(value) {
-
-    const checkboxes = document.querySelectorAll(
-        '.availability-checkbox'
-    );
-
+    const checkboxes = document.querySelectorAll('.availability-checkbox');
     checkboxes.forEach(function (checkbox) {
         checkbox.checked = value;
     });
-
 }
-
-</script>{% endblock %}
+</script>
+{% endblock %}

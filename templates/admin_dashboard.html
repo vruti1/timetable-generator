@@ -1,52 +1,115 @@
 {% extends 'base.html' %}
 
+{% block title %}Admin Dashboard{% endblock %}
+
 {% block content %}
+<div class="dashboard-page">
+    <!-- Clean Page Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Admin Dashboard</h1>
+            <p class="page-subtitle">Manage academic data, course allocations, and timetable generation</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('generate_timetable') }}" class="btn btn-primary">
+                <i class="fa-solid fa-gear"></i> Generate Timetable
+            </a>
+            <a href="{{ url_for('timetable') }}" class="btn btn-outline">
+                <i class="fa-solid fa-calendar-week"></i> View Timetable
+            </a>
+        </div>
+    </div>
 
-<div class="dashboard-page"><div class="dashboard-header">
-    <h1>Admin Dashboard</h1>
-    <p>Manage your timetable system</p>
+    <!-- Section: Academic Entities -->
+    <div class="dashboard-section">
+        <h2 class="section-title">Academic Data</h2>
+        <div class="dashboard-grid">
+            <a class="dashboard-card" href="{{ url_for('classes') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Classes</h3>
+                    <p class="card-desc">Add and manage class divisions and student strength</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('subjects') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Subjects</h3>
+                    <p class="card-desc">Theory and lab subjects with weekly period quotas</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('faculty') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Faculty</h3>
+                    <p class="card-desc">Faculty members and faculty identification codes</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('rooms') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-door-open"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Rooms & Labs</h3>
+                    <p class="card-desc">Classroom and laboratory capacities</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Section: Allocation & Timetable -->
+    <div class="dashboard-section">
+        <h2 class="section-title">Scheduling & Allocation</h2>
+        <div class="dashboard-grid">
+            <a class="dashboard-card" href="{{ url_for('time_slots') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Time Slots</h3>
+                    <p class="card-desc">Configure daily lecture periods and timing</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('assignments') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Load Distribution</h3>
+                    <p class="card-desc">Assign faculty to subjects and classes</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('availability') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Faculty Availability</h3>
+                    <p class="card-desc">Set available time slots for instructors</p>
+                </div>
+            </a>
+
+            <a class="dashboard-card" href="{{ url_for('users') }}">
+                <div class="card-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Users</h3>
+                    <p class="card-desc">Manage login accounts for faculty and students</p>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
-
-<div class="dashboard-grid">
-
-    <a class="dashboard-button" href="{{ url_for('classes') }}">
-        Classes
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('subjects') }}">
-        Subjects
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('faculty') }}">
-        Faculty
-    </a>
-	<a class="dashboard-button" href="{{ url_for('users') }}">
-		Users
-	</a>
-    <a class="dashboard-button" href="{{ url_for('rooms') }}">
-        Rooms / Labs
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('time_slots') }}">
-        Time Slots
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('assignments') }}">
-        Teaching Assignments
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('availability') }}">
-        Faculty Availability
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('generate_timetable') }}">
-        Generate Timetable
-    </a>
-
-    <a class="dashboard-button" href="{{ url_for('timetable') }}">
-        View Timetable
-    </a>
-
-</div>
-
-</div>{% endblock %}
+{% endblock %}

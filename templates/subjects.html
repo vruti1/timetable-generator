@@ -1,1 +1,102 @@
-{% extends 'base.html' %}{% block content %}<h1>Manage Subjects</h1><form method="post" action="{{url_for('add_subject')}}" class="card"><label>Code</label><input name="subject_code" required><label>Name</label><input name="subject_name" required><label>Type</label><select name="subject_type"><option>Theory</option><option>Lab</option></select><label>Lectures/Week</label><input type="number" name="lectures_per_week" min="1" required><button>Add Subject</button></form><table><tr><th>ID</th><th>Code</th><th>Name</th><th>Type</th><th>Periods</th><th>Action</th></tr>{% for s in subjects %}<tr><td>{{s.id}}</td><td>{{s.subject_code}}</td><td>{{s.subject_name}}</td><td>{{s.subject_type}}</td><td>{{s.lectures_per_week}}</td><td><a href="{{url_for('edit_subject',id=s.id)}}">Edit</a> | <a href="{{url_for('delete_subject',id=s.id)}}" onclick="return confirm('Delete?')">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Manage Subjects{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Manage Subjects</h1>
+            <p class="page-subtitle">Configure theory and laboratory curriculum subjects</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="crud-grid">
+        <!-- Add Subject Form -->
+        <div class="crud-form-card">
+            <h3 class="card-heading">Add New Subject</h3>
+            <form method="post" action="{{ url_for('add_subject') }}" class="standard-form">
+                <div class="form-group">
+                    <label for="subject_code">Subject Code</label>
+                    <input id="subject_code" name="subject_code" class="form-control" placeholder="e.g. IOT501" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject_name">Subject Name</label>
+                    <input id="subject_name" name="subject_name" class="form-control" placeholder="e.g. Internet of Things" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="subject_type">Type</label>
+                        <select id="subject_type" name="subject_type" class="form-control">
+                            <option value="Theory">Theory</option>
+                            <option value="Lab">Lab</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col">
+                        <label for="lectures_per_week">Periods / Week</label>
+                        <input type="number" id="lectures_per_week" name="lectures_per_week" class="form-control" placeholder="e.g. 3" min="1" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Subject
+                </button>
+            </form>
+        </div>
+
+        <!-- Subjects Table -->
+        <div class="crud-table-card">
+            <div class="table-header-row">
+                <h3 class="card-heading">Subjects List</h3>
+                <span class="badge-count">{{ subjects|length }} subjects</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Code</th>
+                            <th>Subject Name</th>
+                            <th>Type</th>
+                            <th>Periods/Week</th>
+                            <th style="text-align: right; width: 140px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in subjects %}
+                        <tr>
+                            <td><code>{{ s.subject_code }}</code></td>
+                            <td><strong>{{ s.subject_name }}</strong></td>
+                            <td>
+                                {% if s.subject_type == 'Lab' %}
+                                <span class="tag tag-lab">Lab</span>
+                                {% else %}
+                                <span class="tag tag-theory">Theory</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ s.lectures_per_week }} periods</td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('edit_subject', id=s.id) }}" class="btn-action edit">Edit</a>
+                                <a href="{{ url_for('delete_subject', id=s.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to delete this subject?');">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No subjects added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

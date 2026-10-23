@@ -1,1 +1,50 @@
-{% extends 'base.html' %}{% block content %}<h1>Edit Room</h1><form method="post" class="card"><label>Name</label><input name="room_name" value="{{room.room_name}}" required><label>Type</label><select name="room_type"><option {% if room.room_type=='Classroom' %}selected{% endif %}>Classroom</option><option {% if room.room_type=='Lab' %}selected{% endif %}>Lab</option></select><label>Capacity</label><input type="number" name="capacity" value="{{room.capacity}}" min="1" required><button>Update</button></form>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Edit Room{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width: 500px; margin: 0 auto;">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Edit Room</h1>
+            <p class="page-subtitle">Update room details for {{ room.room_name }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('rooms') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card content-card">
+        <form method="post" class="standard-form">
+            <div class="form-group">
+                <label for="room_name">Room Name</label>
+                <input id="room_name" name="room_name" class="form-control" value="{{ room.room_name }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="room_type">Type</label>
+                    <select id="room_type" name="room_type" class="form-control">
+                        <option value="Classroom" {% if room.room_type == 'Classroom' %}selected{% endif %}>Classroom</option>
+                        <option value="Lab" {% if room.room_type == 'Lab' %}selected{% endif %}>Lab</option>
+                    </select>
+                </div>
+
+                <div class="form-group col">
+                    <label for="capacity">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" class="form-control" value="{{ room.capacity }}" min="1" required>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    Update Room
+                </button>
+                <a href="{{ url_for('rooms') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

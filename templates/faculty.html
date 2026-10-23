@@ -1,1 +1,79 @@
-{% extends 'base.html' %}{% block content %}<h1>Manage Faculty</h1><form method="post" action="{{url_for('add_faculty')}}" class="card"><label>Code</label><input name="faculty_code" required><label>Name</label><input name="faculty_name" required><button>Add Faculty</button></form><table><tr><th>ID</th><th>Code</th><th>Name</th><th>Action</th></tr>{% for f in faculty %}<tr><td>{{f.id}}</td><td>{{f.faculty_code}}</td><td>{{f.faculty_name}}</td><td><a href="{{url_for('edit_faculty',id=f.id)}}">Edit</a> | <a href="{{url_for('delete_faculty',id=f.id)}}" onclick="return confirm('Delete?')">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Manage Faculty{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Manage Faculty</h1>
+            <p class="page-subtitle">Configure faculty members and instructor codes</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="crud-grid">
+        <!-- Add Faculty Form -->
+        <div class="crud-form-card">
+            <h3 class="card-heading">Add Faculty Member</h3>
+            <form method="post" action="{{ url_for('add_faculty') }}" class="standard-form">
+                <div class="form-group">
+                    <label for="faculty_code">Faculty Code</label>
+                    <input id="faculty_code" name="faculty_code" class="form-control" placeholder="e.g. F001" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="faculty_name">Faculty Name</label>
+                    <input id="faculty_name" name="faculty_name" class="form-control" placeholder="e.g. Prof. Sharma" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Faculty
+                </button>
+            </form>
+        </div>
+
+        <!-- Faculty Table -->
+        <div class="crud-table-card">
+            <div class="table-header-row">
+                <h3 class="card-heading">Faculty List</h3>
+                <span class="badge-count">{{ faculty|length }} faculty</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th style="width: 120px;">Code</th>
+                            <th>Faculty Name</th>
+                            <th style="text-align: right; width: 140px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in faculty %}
+                        <tr>
+                            <td>{{ f.id }}</td>
+                            <td><code>{{ f.faculty_code }}</code></td>
+                            <td><strong>{{ f.faculty_name }}</strong></td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('edit_faculty', id=f.id) }}" class="btn-action edit">Edit</a>
+                                <a href="{{ url_for('delete_faculty', id=f.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to delete this faculty member?');">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No faculty members added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,75 @@
-{% extends 'base.html' %}{% block content %}<h1>Generate Timetable</h1><div class="card"><p>Teaching assignments: {{assignment_count}}</p><p>Rooms/Labs: {{room_count}}</p><p>Time slots: {{slot_count}}</p><form method="post"><button>Generate Timetable</button></form></div>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Generate Timetable{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Generate Timetable</h1>
+            <p class="page-subtitle">Run the scheduling algorithm to create weekly lecture allocations</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('timetable') }}" class="btn btn-outline">
+                <i class="fa-solid fa-calendar-week"></i> View Timetable
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Configuration Summary -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="summary-title">Teaching Assignments</div>
+            <div class="summary-count">{{ assignment_count }}</div>
+            <div class="summary-desc">Configured class-subject mappings</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-title">Available Rooms</div>
+            <div class="summary-count">{{ room_count }}</div>
+            <div class="summary-desc">Classrooms and labs</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-title">Time Slots</div>
+            <div class="summary-count">{{ slot_count }}</div>
+            <div class="summary-desc">Weekly time periods</div>
+        </div>
+    </div>
+
+    <!-- Generator Box -->
+    <div class="card content-card">
+        <h3 class="card-heading">Automatic Schedule Generation</h3>
+        <p class="text-muted" style="margin-bottom: 20px;">
+            The scheduler will check teacher availability, room capacity, and assign lectures conflict-free across the week.
+        </p>
+
+        <ul class="rule-list">
+            <li><i class="fa-solid fa-check text-success"></i> Prevents teacher overlap across classes</li>
+            <li><i class="fa-solid fa-check text-success"></i> Distributes theory and lab sessions into respective rooms</li>
+            <li><i class="fa-solid fa-check text-success"></i> Respects faculty availability settings</li>
+        </ul>
+
+        <form method="post" id="genForm" style="margin-top: 25px;">
+            <button type="submit" class="btn btn-primary btn-lg" id="genButton" {% if assignment_count == 0 or room_count == 0 or slot_count == 0 %}disabled{% endif %}>
+                <i class="fa-solid fa-gear"></i> Run Timetable Generator
+            </button>
+            <span class="form-hint">Note: Running generation will replace the currently saved schedule.</span>
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('genForm');
+    const btn = document.getElementById('genButton');
+    if (form && btn) {
+        form.addEventListener('submit', function() {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+        });
+    }
+</script>
+{% endblock %}

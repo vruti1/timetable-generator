@@ -11,7 +11,7 @@ from scheduler.engine import generate_schedule, SchedulingError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change-this-secret')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql+psycopg2://postgres:YOUR_PASSWORD@localhost:5432/tt_generator')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql+psycopg://postgres:5432@localhost:5432/tt_generator')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -205,6 +205,108 @@ def delete_class(id):
     except Exception: db.session.rollback(); flash('Could not delete class; it may be referenced by other data.','error')
     return redirect(url_for('classes'))
 
+@app.get('/batches')
+@required('admin')
+def batches():
+    batch_list = LabBatch.query.join(
+        Class, LabBatch.class_id == Class.id
+    ).order_by(
+        Class.id, LabBatch.batch_name
+    ).all()
+
+    return render_template(
+        'batches.html',
+        batches=batch_list,
+        classes=Class.query.order_by(Class.id).all()
+    )
+
+
+@app.post('/add-batch')
+@required('admin')
+def add_batch():
+    try:
+        class_id = int(request.form.get('class_id', ''))
+        batch_name = request.form.get('batch_name', '').strip()
+        student_count = positive(
+            request.form.get('student_count', ''),
+            'Student count'
+        )
+
+        class_data = db.get_or_404(Class, class_id)
+
+        if not batch_name:
+            raise ValueError('Batch name is required.')
+
+        if student_count > class_data.strength:
+            raise ValueError(
+                'Batch student count cannot exceed class strength.'
+            )
+
+        if LabBatch.query.filter_by(
+            class_id=class_id,
+            batch_name=batch_name
+        ).first():
+            raise ValueError(
+                'This batch name already exists for this class.'
+            )
+
+        existing_count = db.session.query(
+            db.func.coalesce(
+                db.func.sum(LabBatch.student_count), 0
+            )
+        ).filter_by(class_id=class_id).scalar()
+
+        if existing_count + student_count > class_data.strength:
+            raise ValueError(
+                'Total batch students cannot exceed class strength.'
+            )
+
+        batch = LabBatch(
+            class_id=class_id,
+            batch_name=batch_name,
+            student_count=student_count
+        )
+
+        db.session.add(batch)
+        db.session.commit()
+        flash('Lab batch added successfully.', 'success')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(str(e), 'error')
+
+    return redirect(url_for('batches'))
+
+
+@app.post('/delete-batch/<int:id>')
+@required('admin')
+def delete_batch(id):
+    batch = db.get_or_404(LabBatch, id)
+
+    if User.query.filter_by(batch_id=id).first():
+        flash(
+            'This batch is linked to a student account and cannot be deleted.',
+            'error'
+        )
+        return redirect(url_for('batches'))
+
+    if Timetable.query.filter_by(batch_id=id).first():
+        flash(
+            'This batch is used in timetable records. '
+            'Regenerate the timetable before deleting it.',
+            'error'
+        )
+        return redirect(url_for('batches'))
+
+    try:
+        db.session.delete(batch)
+        db.session.commit()
+        flash('Lab batch deleted successfully.', 'success')
+    except Exception:
+        db.session.rollback()
+        flash('Could not delete this batch.', 'error')
+
+    return redirect(url_for('batches'))
 @app.get('/subjects')
 @required('admin')
 def subjects(): return render_template('subjects.html',subjects=Subject.query.order_by(Subject.id).all())
@@ -368,7 +470,11 @@ def generate_timetable():
             sid=str(uuid.uuid4())
             for p in placements: db.session.add(Timetable(session_id=sid,class_id=p.class_id,subject_id=p.subject_id,faculty_id=p.faculty_id,room_id=p.room_id,time_slot_id=p.time_slot_id,batch_id=p.batch_id))
             db.session.commit(); flash(f'Timetable generated: {len(placements)} sessions.','success'); return redirect(url_for('timetable'))
-        except Exception as e: db.session.rollback(); flash(str(e),'error')
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            db.session.rollback()
+            flash(str(e), 'error')
     return render_template('generate_timetable.html',assignment_count=TeachingAssignment.query.count(),room_count=Room.query.count(),slot_count=TimeSlot.query.count())
 
 @app.get('/timetable')
@@ -429,7 +535,7 @@ def timetable():
                 (Timetable.batch_id.is_(None))
             )
 
-    # Admin can select SE / TE
+    # Admin can select SE / TE / BE
     else:
 
         selected_class_id = request.args.get(
@@ -444,7 +550,8 @@ def timetable():
 
     timetable_data = query.order_by(
         Timetable.class_id,
-        Timetable.time_slot_id
+        Timetable.time_slot_id,
+        Timetable.batch_id
     ).all()
 
     classes = Class.query.order_by(

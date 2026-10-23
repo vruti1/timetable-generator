@@ -1,1 +1,105 @@
-{% extends 'base.html' %}{% block content %}<h1>Teaching Assignments</h1><p>This is the missing link between classes, subjects and faculty.</p><form method="post" action="{{url_for('add_assignment')}}" class="card"><label>Class</label><select name="class_id">{% for x in classes %}<option value="{{x.id}}">{{x.class_name}} - {{x.division}}</option>{% endfor %}</select><label>Subject</label><select name="subject_id">{% for x in subjects %}<option value="{{x.id}}">{{x.subject_code}} - {{x.subject_name}}</option>{% endfor %}</select><label>Faculty</label><select name="faculty_id">{% for x in faculty %}<option value="{{x.id}}">{{x.faculty_code}} - {{x.faculty_name}}</option>{% endfor %}</select><label>Periods/Week</label><input type="number" name="periods_per_week" min="1" required><button>Add Assignment</button></form><table><tr><th>Class</th><th>Subject</th><th>Faculty</th><th>Periods</th><th>Action</th></tr>{% for a in assignments %}<tr><td>{{a.class_ref.class_name}} - {{a.class_ref.division}}</td><td>{{a.subject_ref.subject_code}}</td><td>{{a.faculty_ref.faculty_name}}</td><td>{{a.periods_per_week}}</td><td><a href="{{url_for('delete_assignment',id=a.id)}}">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Load Distribution{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Teaching Load Distribution</h1>
+            <p class="page-subtitle">Assign subjects and weekly lecture loads to faculty members</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="crud-grid">
+        <!-- Add Assignment Form -->
+        <div class="crud-form-card">
+            <h3 class="card-heading">Add Teaching Assignment</h3>
+            <form method="post" action="{{ url_for('add_assignment') }}" class="standard-form">
+                <div class="form-group">
+                    <label for="class_id">Class</label>
+                    <select id="class_id" name="class_id" class="form-control" required>
+                        <option value="">-- Select Class --</option>
+                        {% for x in classes %}
+                        <option value="{{ x.id }}">{{ x.class_name }} - Div {{ x.division }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject_id">Subject</label>
+                    <select id="subject_id" name="subject_id" class="form-control" required>
+                        <option value="">-- Select Subject --</option>
+                        {% for x in subjects %}
+                        <option value="{{ x.id }}">{{ x.subject_code }} - {{ x.subject_name }} ({{ x.subject_type }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="faculty_id">Faculty</label>
+                    <select id="faculty_id" name="faculty_id" class="form-control" required>
+                        <option value="">-- Select Faculty --</option>
+                        {% for x in faculty %}
+                        <option value="{{ x.id }}">{{ x.faculty_code }} - {{ x.faculty_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="periods_per_week">Periods / Week</label>
+                    <input type="number" id="periods_per_week" name="periods_per_week" class="form-control" placeholder="e.g. 3" min="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Assignment
+                </button>
+            </form>
+        </div>
+
+        <!-- Assignments Table -->
+        <div class="crud-table-card">
+            <div class="table-header-row">
+                <h3 class="card-heading">Active Assignments</h3>
+                <span class="badge-count">{{ assignments|length }} assignments</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Faculty</th>
+                            <th>Periods</th>
+                            <th style="text-align: right; width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in assignments %}
+                        <tr>
+                            <td><strong>{{ a.class_ref.class_name }} - {{ a.class_ref.division }}</strong></td>
+                            <td><code>{{ a.subject_ref.subject_code }}</code> {{ a.subject_ref.subject_name }}</td>
+                            <td>{{ a.faculty_ref.faculty_name }}</td>
+                            <td>{{ a.periods_per_week }} hrs/wk</td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('delete_assignment', id=a.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to remove this assignment?');">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No teaching assignments added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

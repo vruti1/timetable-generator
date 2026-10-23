@@ -1,1 +1,93 @@
-{% extends 'base.html' %}{% block content %}<h1>Manage Time Slots</h1><form method="post" action="{{url_for('add_time_slot')}}" class="card"><label>Day</label><select name="day">{% for d in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] %}<option>{{d}}</option>{% endfor %}</select><label>Start</label><input type="time" name="start_time" required><label>End</label><input type="time" name="end_time" required><button>Add Time Slot</button></form><table><tr><th>ID</th><th>Day</th><th>Start</th><th>End</th><th>Action</th></tr>{% for t in time_slots %}<tr><td>{{t.id}}</td><td>{{t.day}}</td><td>{{t.start_time}}</td><td>{{t.end_time}}</td><td><a href="{{url_for('edit_time_slot',id=t.id)}}">Edit</a> | <a href="{{url_for('delete_time_slot',id=t.id)}}" onclick="return confirm('Delete?')">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Manage Time Slots{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Manage Time Slots</h1>
+            <p class="page-subtitle">Configure lecture timings and active teaching days</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="crud-grid">
+        <!-- Add Time Slot Form -->
+        <div class="crud-form-card">
+            <h3 class="card-heading">Add Time Slot</h3>
+            <form method="post" action="{{ url_for('add_time_slot') }}" class="standard-form">
+                <div class="form-group">
+                    <label for="day">Day</label>
+                    <select id="day" name="day" class="form-control" required>
+                        {% for d in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+                        <option value="{{ d }}">{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="start_time">Start Time</label>
+                        <input type="time" id="start_time" name="start_time" class="form-control" required>
+                    </div>
+
+                    <div class="form-group col">
+                        <label for="end_time">End Time</label>
+                        <input type="time" id="end_time" name="end_time" class="form-control" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Time Slot
+                </button>
+            </form>
+        </div>
+
+        <!-- Time Slots Table -->
+        <div class="crud-table-card">
+            <div class="table-header-row">
+                <h3 class="card-heading">Time Slots List</h3>
+                <span class="badge-count">{{ time_slots|length }} slots</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">ID</th>
+                            <th>Day</th>
+                            <th>Timing</th>
+                            <th style="text-align: right; width: 140px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in time_slots %}
+                        <tr>
+                            <td>{{ t.id }}</td>
+                            <td><strong>{{ t.day }}</strong></td>
+                            <td>
+                                {{ t.start_time.strftime('%I:%M %p') if t.start_time.strftime else t.start_time }} –
+                                {{ t.end_time.strftime('%I:%M %p') if t.end_time.strftime else t.end_time }}
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('edit_time_slot', id=t.id) }}" class="btn-action edit">Edit</a>
+                                <a href="{{ url_for('delete_time_slot', id=t.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to delete this time slot?');">Delete</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No time slots added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

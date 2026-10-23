@@ -1,74 +1,64 @@
 {% extends 'base.html' %}
 
+{% block title %}User Management{% endblock %}
+
 {% block content %}
-
-<div class="dashboard-page">
-
-    <div class="dashboard-header">
-        <h1>Users</h1>
-        <p>Manage faculty and student login accounts</p>
-    </div>
-	<a class="dashboard-button" href="{{ url_for('add_user') }}">
-		+ Add User
-	</a>
-    <div class="table-container">
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th>Faculty ID</th>
-                    <th>Class ID</th>
-                    <th>Batch ID</th>
-					<th>Action</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.role }}</td>
-                    <td>
-						{% if user.role == 'teacher' %}
-							Faculty
-						{% else %}
-							{{ user.role|capitalize }}
-						{% endif %}
-					</td>
-					<td>{{ user.faculty_id or '-' }}</td>
-                    <td>{{ user.class_id or '-' }}</td>
-                    <td>{{ user.batch_id or '-' }}</td>
-					<td>
-						<a href="{{ url_for('change_password', id=user.id) }}">
-							Change Password
-						</a>
-
-						{% if user.role != 'admin' %}
-							<br><br>
-							<a href="{{ url_for('delete_user', id=user.id) }}"
-							   onclick="return confirm('Are you sure you want to delete this user?');">
-								Delete
-							</a>
-						{% endif %}
-					</td>
-				</tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Users</h1>
+            <p class="page-subtitle">Manage faculty and student login accounts</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('add_user') }}" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Add User
+            </a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
     </div>
 
-    <br>
-
-    <a href="{{ url_for('admin_dashboard') }}" class="back-button">
-        ← Back
-    </a>
-
+    <div class="card content-card" style="padding: 0; overflow: hidden;">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Faculty ID</th>
+                        <th>Class ID</th>
+                        <th>Batch ID</th>
+                        <th style="text-align: right; width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td><strong>{{ user.username }}</strong></td>
+                        <td>
+                            <span class="tag tag-role">{{ user.role|capitalize }}</span>
+                        </td>
+                        <td>{{ user.faculty_id or '-' }}</td>
+                        <td>{{ user.class_id or '-' }}</td>
+                        <td>{{ user.batch_id or '-' }}</td>
+                        <td style="text-align: right;">
+                            <a href="{{ url_for('change_password', id=user.id) }}" class="btn-action edit">Change Password</a>
+                            {% if user.role != 'admin' %}
+                            <a href="{{ url_for('delete_user', id=user.id) }}" class="btn-action delete" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No user accounts found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
 {% endblock %}

@@ -1,62 +1,69 @@
 {% extends 'base.html' %}
 
+{% block title %}Add User{% endblock %}
+
 {% block content %}
-
-<div class="dashboard-page">
-
-    <div class="dashboard-header">
-        <h1>Add User</h1>
-        <p>Create a faculty or student login account</p>
+<div class="page-container" style="max-width: 600px; margin: 0 auto;">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Add User</h1>
+            <p class="page-subtitle">Create a faculty or student login account</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('users') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back to Users
+            </a>
+        </div>
     </div>
 
-    <div class="form-container">
+    <div class="card content-card">
+        <form method="POST" class="standard-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="e.g. prof_patil" required>
+            </div>
 
-        <form method="POST">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
 
-            <label>Username</label>
-            <input type="text" name="username" required>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role" class="form-control" required>
+                    <option value="">-- Select Role --</option>
+                    <option value="teacher">Faculty</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+            <div class="form-group">
+                <label for="faculty_id">Linked Faculty (Optional)</label>
+                <select id="faculty_id" name="faculty_id" class="form-control">
+                    <option value="">-- Select Faculty --</option>
+                    {% for f in faculty %}
+                    <option value="{{ f.id }}">{{ f.faculty_name }} ({{ f.faculty_code }})</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <label>Role</label>
-            <select name="role" required>
-                <option value="">Select Role</option>
-                <option value="teacher">Faculty</option>
-                <option value="student">Student</option>
-            </select>
-			<label>Faculty</label>
-			<select name="faculty_id">
-				<option value="">Select Faculty</option>
+            <div class="form-group">
+                <label for="class_id">Linked Class (Optional)</label>
+                <select id="class_id" name="class_id" class="form-control">
+                    <option value="">-- Select Class --</option>
+                    {% for c in classes %}
+                    <option value="{{ c.id }}">{{ c.class_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-				{% for f in faculty %}
-					<option value="{{ f.id }}">{{ f.faculty_name }}</option>
-				{% endfor %}
-			</select>
-			<label>Class</label>
-			<select name="class_id">
-				<option value="">Select Class</option>
-
-				{% for c in classes %}
-					<option value="{{ c.id }}">{{ c.class_name }}</option>
-				{% endfor %}
-			</select>
-            <br><br>
-
-            <button type="submit" class="dashboard-button">
-                Create User
-            </button>
-
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    Create User
+                </button>
+                <a href="{{ url_for('users') }}" class="btn btn-outline">Cancel</a>
+            </div>
         </form>
-
     </div>
-
-    <br>
-
-    <a href="{{ url_for('users') }}" class="back-button">
-        ← Back
-    </a>
-
 </div>
-
 {% endblock %}

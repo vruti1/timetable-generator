@@ -1,1 +1,47 @@
-{% extends 'base.html' %}{% block content %}<h1>Edit Class</h1><form method="post" class="card"><label>Class Name</label><input name="class_name" value="{{class_data.class_name}}" required><label>Division</label><input name="division" value="{{class_data.division}}" required><label>Strength</label><input type="number" name="strength" value="{{class_data.strength}}" min="1" required><button>Update</button></form>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Edit Class{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width: 550px; margin: 0 auto;">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Edit Class</h1>
+            <p class="page-subtitle">Update class details for {{ class_data.class_name }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('classes') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card content-card">
+        <form method="post" class="standard-form">
+            <div class="form-group">
+                <label for="class_name">Class Name</label>
+                <input id="class_name" name="class_name" class="form-control" value="{{ class_data.class_name }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="division">Division</label>
+                    <input id="division" name="division" class="form-control" value="{{ class_data.division }}" required>
+                </div>
+
+                <div class="form-group col">
+                    <label for="strength">Student Strength</label>
+                    <input type="number" id="strength" name="strength" class="form-control" value="{{ class_data.strength }}" min="1" required>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    Update Class
+                </button>
+                <a href="{{ url_for('classes') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

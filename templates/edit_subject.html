@@ -1,1 +1,55 @@
-{% extends 'base.html' %}{% block content %}<h1>Edit Subject</h1><form method="post" class="card"><label>Code</label><input name="subject_code" value="{{subject.subject_code}}" required><label>Name</label><input name="subject_name" value="{{subject.subject_name}}" required><label>Type</label><select name="subject_type"><option {% if subject.subject_type=='Theory' %}selected{% endif %}>Theory</option><option {% if subject.subject_type=='Lab' %}selected{% endif %}>Lab</option></select><label>Lectures/Week</label><input type="number" name="lectures_per_week" value="{{subject.lectures_per_week}}" min="1" required><button>Update</button></form>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Edit Subject{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width: 550px; margin: 0 auto;">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Edit Subject</h1>
+            <p class="page-subtitle">Update subject details for {{ subject.subject_name }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('subjects') }}" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="card content-card">
+        <form method="post" class="standard-form">
+            <div class="form-group">
+                <label for="subject_code">Subject Code</label>
+                <input id="subject_code" name="subject_code" class="form-control" value="{{ subject.subject_code }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject_name">Subject Name</label>
+                <input id="subject_name" name="subject_name" class="form-control" value="{{ subject.subject_name }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="subject_type">Type</label>
+                    <select id="subject_type" name="subject_type" class="form-control">
+                        <option value="Theory" {% if subject.subject_type == 'Theory' %}selected{% endif %}>Theory</option>
+                        <option value="Lab" {% if subject.subject_type == 'Lab' %}selected{% endif %}>Lab</option>
+                    </select>
+                </div>
+
+                <div class="form-group col">
+                    <label for="lectures_per_week">Periods / Week</label>
+                    <input type="number" id="lectures_per_week" name="lectures_per_week" class="form-control" value="{{ subject.lectures_per_week }}" min="1" required>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    Update Subject
+                </button>
+                <a href="{{ url_for('subjects') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
